@@ -22,7 +22,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import {VRFConsumerBaseV2Plus} from "@chainlink/contracts@1.1.1/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
+import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/v0.8/vrf/dev/VRFConsumerBaseV2.sol";
 
 /**
  * @title A sample raffle contract
@@ -30,6 +30,7 @@ import {VRFConsumerBaseV2Plus} from "@chainlink/contracts@1.1.1/src/v0.8/vrf/dev
  * @notice This contract is a simple raffle contract that allows users to enter a raffle by sending ether. Built to learn about Solidity and smart contracts. 
  * @dev Implements Chainlink VRFv2.5
  */
+
 contract Raffle {
     /* Errors*/
     error Raffle__SendMoreToEnterRaffle();
