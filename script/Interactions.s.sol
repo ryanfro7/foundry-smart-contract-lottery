@@ -9,10 +9,7 @@ import {DevOpsTools} from "lib/foundry-devops/src/DevOpsTools.sol";
 uint256 constant LOCAL_CHAIN_ID = 31337;
 
 contract CreateSubscription is Script {
-    function createSubscription(
-        address vrfCoordinator,
-        uint256 deployerKey
-    ) public returns (uint256) {
+    function createSubscription(address vrfCoordinator, uint256 deployerKey) public returns (uint256) {
         require(vrfCoordinator != address(0), "Invalid VRF Coordinator address");
         console.log("CreateSubscription: vrfCoordinator:", vrfCoordinator);
         console.log("CreateSubscription: deployerKey:", deployerKey);
@@ -31,12 +28,9 @@ contract CreateSubscription is Script {
 contract FundSubscription is Script {
     uint256 public constant FUND_AMOUNT = 3 ether; // 3 LINK
 
-    function fundSubscription(
-        address vrfCoordinator,
-        uint256 subscriptionId,
-        address linkToken,
-        uint256 deployerKey
-    ) public {
+    function fundSubscription(address vrfCoordinator, uint256 subscriptionId, address linkToken, uint256 deployerKey)
+        public
+    {
         require(vrfCoordinator != address(0), "Invalid VRF Coordinator address");
         require(subscriptionId != 0, "Invalid subscriptionId");
         console.log("FundSubscription: vrfCoordinator:", vrfCoordinator);
@@ -45,40 +39,25 @@ contract FundSubscription is Script {
         console.log("FundSubscription: deployerKey:", deployerKey);
         if (block.chainid == LOCAL_CHAIN_ID) {
             vm.startBroadcast(deployerKey);
-            VRFCoordinatorV2PlusMock(vrfCoordinator).fundSubscription(
-                subscriptionId,
-                uint96(FUND_AMOUNT)
-            );
+            VRFCoordinatorV2PlusMock(vrfCoordinator).fundSubscription(subscriptionId, uint96(FUND_AMOUNT));
             vm.stopBroadcast();
         } else {
             vm.startBroadcast(deployerKey);
-            LinkToken(linkToken).transferAndCall(
-                vrfCoordinator,
-                FUND_AMOUNT,
-                abi.encode(subscriptionId)
-            );
+            LinkToken(linkToken).transferAndCall(vrfCoordinator, FUND_AMOUNT, abi.encode(subscriptionId));
             vm.stopBroadcast();
         }
         console.log("Funded subscription:", subscriptionId);
     }
 
-    function run(
-        address vrfCoordinator,
-        uint256 subscriptionId,
-        address linkToken,
-        uint256 deployerKey
-    ) external {
+    function run(address vrfCoordinator, uint256 subscriptionId, address linkToken, uint256 deployerKey) external {
         fundSubscription(vrfCoordinator, subscriptionId, linkToken, deployerKey);
     }
 }
 
 contract AddConsumer is Script {
-    function addConsumer(
-        address contractToAddToVrf,
-        address vrfCoordinator,
-        uint256 subId,
-        uint256 deployerKey
-    ) public {
+    function addConsumer(address contractToAddToVrf, address vrfCoordinator, uint256 subId, uint256 deployerKey)
+        public
+    {
         require(vrfCoordinator != address(0), "Invalid VRF Coordinator address");
         require(subId != 0, "Invalid subscriptionId");
         console.log("AddConsumer: contractToAddToVrf:", contractToAddToVrf);
@@ -91,12 +70,7 @@ contract AddConsumer is Script {
         console.log("Added consumer:", contractToAddToVrf, "to subscription:", subId);
     }
 
-    function run(
-        address contractToAddToVrf,
-        address vrfCoordinator,
-        uint256 subId,
-        uint256 deployerKey
-    ) external {
+    function run(address contractToAddToVrf, address vrfCoordinator, uint256 subId, uint256 deployerKey) external {
         addConsumer(contractToAddToVrf, vrfCoordinator, subId, deployerKey);
     }
 }
