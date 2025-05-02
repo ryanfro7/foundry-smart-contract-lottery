@@ -2,6 +2,28 @@
 src = "src"
 out = "out"
 libs = ["lib"]
-remappings = []
+remappings = [
+    '@chainlink/contracts/=lib/chainlink/contracts/src/',
+    '@solmate=lib/solmate/src/',
+    '@openzeppelin/=lib/openzeppelin-contracts/',
+]
+coverage_ignored_paths = [
+    "./src/Raffle_Old.sol",
+    "./test/mocks/LinkToken.sol",
+    "./test/mocks/**/*",
+    "./script/**/*",
+    "./lib/**/*"
+]
+fs_permissions = [
+    { access = "read", path = "./broadcast" },
+    { access = "read", path = "./reports" },
+]
+
+[fuzz]
+runs = 256
+
+[profile.env]
+PRIVATE_KEY = "${PRIVATE_KEY}"
+SEPOLIA_RPC_URL = "${SEPOLIA_RPC_URL}"
+
 solc_version = "0.8.19"
-# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
