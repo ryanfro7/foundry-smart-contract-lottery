@@ -5,7 +5,7 @@ import {console, Test} from "forge-std/Test.sol";
 import {Raffle} from "../../src/Raffle.sol";
 import {DeployRaffle} from "../../script/DeployRaffle.s.sol";
 import {CreateSubscription, FundSubscription, AddConsumer} from "../../script/Interactions.s.sol";
-import {VRFCoordinatorV2PlusMock} from "lib/chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2PlusMock.sol";
+import {VRFCoordinatorV2PlusMock} from "test/mocks/VRFCoordinatorV2PlusMock.sol";
 import {HelperConfig} from "../../script/HelperConfig.s.sol";
 
 contract InteractionsTest is Test {
