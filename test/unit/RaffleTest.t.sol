@@ -6,7 +6,7 @@ import {DeployRaffle} from "script/DeployRaffle.s.sol";
 import {Raffle} from "src/Raffle.sol";
 import {HelperConfig} from "script/HelperConfig.s.sol";
 import {Vm} from "forge-std/Vm.sol";
-import {VRFCoordinatorV2PlusMock} from "test/mocks/VRFCoordinatorV2PlusMock.sol";
+import {VRFCoordinatorV2_5Mock} from "lib/chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
 import {CodeConstants} from "script/HelperConfig.s.sol";
 import "forge-std/console.sol";
 
@@ -200,9 +200,10 @@ contract RaffleTest is CodeConstants, Test {
         raffleEntered
         skipFork
     {
-        //Arrange / Act / Assert
-        vm.expectRevert("nonexistent request");
-        VRFCoordinatorV2PlusMock(vrfCoordinator).fulfillRandomWords(randomRequestId, address(raffle));
+        // Arrange / Act / Assert
+        // Change this line to expect the custom error instead of a string error
+        vm.expectRevert(VRFCoordinatorV2_5Mock.InvalidRequest.selector);
+        VRFCoordinatorV2_5Mock(vrfCoordinator).fulfillRandomWords(randomRequestId, address(raffle));
     }
 
     function testFulfillRandomWordsPicksAWinnerResetsAndSendsMoney() public raffleEntered skipFork {
@@ -224,7 +225,7 @@ contract RaffleTest is CodeConstants, Test {
         raffle.performUpkeep("");
         Vm.Log[] memory entries = vm.getRecordedLogs();
         bytes32 requestId = entries[1].topics[1];
-        VRFCoordinatorV2PlusMock(vrfCoordinator).fulfillRandomWords(uint256(requestId), address(raffle));
+        VRFCoordinatorV2_5Mock(vrfCoordinator).fulfillRandomWords(uint256(requestId), address(raffle));
 
         //Assert
         address recentWinner = raffle.getRecentWinner();

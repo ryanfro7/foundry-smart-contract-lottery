@@ -2,7 +2,7 @@
 pragma solidity ^0.8.19;
 
 import {Script} from "forge-std/Script.sol";
-import {VRFCoordinatorV2PlusMock} from "test/mocks/VRFCoordinatorV2PlusMock.sol";
+import {VRFCoordinatorV2_5Mock} from "lib/chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
 import {LinkToken} from "test/mocks/LinkToken.sol";
 
 error HelperConfig__InvalidChainId();
@@ -71,9 +71,13 @@ contract HelperConfig is Script, CodeConstants {
             return localNetworkConfig;
         }
 
-        //Deploy mocks and such\
+        //Deploy mocks and such
         vm.startBroadcast();
-        VRFCoordinatorV2PlusMock vrfCoordinatorMock = new VRFCoordinatorV2PlusMock(MOCK_BASE_FEE, MOCK_GAS_PRICE_LINK);
+        VRFCoordinatorV2_5Mock vrfCoordinatorMock = new VRFCoordinatorV2_5Mock(
+            MOCK_BASE_FEE,
+            MOCK_GAS_PRICE_LINK,
+            1e18 // wei per unit link conversion rate
+        );
         LinkToken linkToken = new LinkToken();
         vm.stopBroadcast();
 
@@ -81,10 +85,9 @@ contract HelperConfig is Script, CodeConstants {
             entranceFee: 0.01 ether,
             interval: 30,
             vrfCoordinator: address(vrfCoordinatorMock),
-            // gas lane doesn't matter
             gasLane: 0x1770bdc7eec7771f7ba4ffd640f34260d7f095b79c92d34a5b2551d6f6cfd2be,
             callbackGasLimit: 500000,
-            subscriptionId: 0, //might have to fix this
+            subscriptionId: 0,
             link: address(linkToken),
             deployerKey: DEFAULT_ANVIL_KEY
         });

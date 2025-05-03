@@ -2,7 +2,7 @@
 pragma solidity ^0.8.19;
 
 import {Script, console} from "forge-std/Script.sol";
-import {VRFCoordinatorV2PlusMock} from "test/mocks/VRFCoordinatorV2PlusMock.sol";
+import {VRFCoordinatorV2_5Mock} from "lib/chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
 import {LinkToken} from "test/mocks/LinkToken.sol";
 import {DevOpsTools} from "lib/foundry-devops/src/DevOpsTools.sol";
 
@@ -14,7 +14,7 @@ contract CreateSubscription is Script {
         console.log("CreateSubscription: vrfCoordinator:", vrfCoordinator);
         console.log("CreateSubscription: deployerKey:", deployerKey);
         vm.startBroadcast(deployerKey);
-        uint256 subId = VRFCoordinatorV2PlusMock(vrfCoordinator).createSubscription();
+        uint256 subId = VRFCoordinatorV2_5Mock(vrfCoordinator).createSubscription();
         vm.stopBroadcast();
         console.log("Created subscription with ID:", subId);
         return subId;
@@ -39,7 +39,7 @@ contract FundSubscription is Script {
         console.log("FundSubscription: deployerKey:", deployerKey);
         if (block.chainid == LOCAL_CHAIN_ID) {
             vm.startBroadcast(deployerKey);
-            VRFCoordinatorV2PlusMock(vrfCoordinator).fundSubscription(subscriptionId, uint96(FUND_AMOUNT));
+            VRFCoordinatorV2_5Mock(vrfCoordinator).fundSubscription(subscriptionId, uint96(FUND_AMOUNT));
             vm.stopBroadcast();
         } else {
             vm.startBroadcast(deployerKey);
@@ -65,7 +65,7 @@ contract AddConsumer is Script {
         console.log("AddConsumer: subId:", subId);
         console.log("AddConsumer: deployerKey:", deployerKey);
         vm.startBroadcast(deployerKey);
-        VRFCoordinatorV2PlusMock(vrfCoordinator).addConsumer(subId, contractToAddToVrf);
+        VRFCoordinatorV2_5Mock(vrfCoordinator).addConsumer(subId, contractToAddToVrf);
         vm.stopBroadcast();
         console.log("Added consumer:", contractToAddToVrf, "to subscription:", subId);
     }

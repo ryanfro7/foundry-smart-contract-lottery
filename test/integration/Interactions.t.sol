@@ -5,7 +5,7 @@ import {console, Test} from "forge-std/Test.sol";
 import {Raffle} from "../../src/Raffle.sol";
 import {DeployRaffle} from "../../script/DeployRaffle.s.sol";
 import {CreateSubscription, FundSubscription, AddConsumer} from "../../script/Interactions.s.sol";
-import {VRFCoordinatorV2PlusMock} from "test/mocks/VRFCoordinatorV2PlusMock.sol";
+import {VRFCoordinatorV2_5Mock} from "lib/chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
 import {HelperConfig} from "../../script/HelperConfig.s.sol";
 
 contract InteractionsTest is Test {
@@ -29,7 +29,7 @@ contract InteractionsTest is Test {
         CreateSubscription createSubscription = new CreateSubscription();
         uint256 subId = createSubscription.createSubscription(vrfCoordinator, deployerKey);
         assert(subId != 0);
-        (,,, address owner,) = VRFCoordinatorV2PlusMock(vrfCoordinator).getSubscription(subId);
+        (,,, address owner,) = VRFCoordinatorV2_5Mock(vrfCoordinator).getSubscription(subId);
         assertEq(owner, vm.addr(deployerKey));
     }
 
@@ -38,13 +38,13 @@ contract InteractionsTest is Test {
         CreateSubscription createSubscription = new CreateSubscription();
         uint256 subId = createSubscription.createSubscription(vrfCoordinator, deployerKey);
 
-        (uint96 beforeBalance,,,,) = VRFCoordinatorV2PlusMock(vrfCoordinator).getSubscription(subId);
+        (uint96 beforeBalance,,,,) = VRFCoordinatorV2_5Mock(vrfCoordinator).getSubscription(subId);
         console.log("Balance before funding:", beforeBalance);
 
         FundSubscription fundSubscription = new FundSubscription();
         fundSubscription.fundSubscription(vrfCoordinator, subId, linkToken, deployerKey);
 
-        (uint96 afterBalance,,,,) = VRFCoordinatorV2PlusMock(vrfCoordinator).getSubscription(subId);
+        (uint96 afterBalance,,,,) = VRFCoordinatorV2_5Mock(vrfCoordinator).getSubscription(subId);
         console.log("Balance after funding:", afterBalance);
 
         assert(afterBalance != 0);
@@ -59,7 +59,7 @@ contract InteractionsTest is Test {
         addConsumer.addConsumer(address(raffle), vrfCoordinator, subId, deployerKey);
 
         // Check if raffle is a consumer
-        (,,,, address[] memory consumers) = VRFCoordinatorV2PlusMock(vrfCoordinator).getSubscription(subId);
+        (,,,, address[] memory consumers) = VRFCoordinatorV2_5Mock(vrfCoordinator).getSubscription(subId);
         bool isAdded = false;
         for (uint256 i = 0; i < consumers.length; i++) {
             if (consumers[i] == address(raffle)) {
